@@ -1,9 +1,9 @@
 from django.contrib.auth import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from rest_framework import viewsets
-from rest_framework import permissions
-from main_project.api.serializers import UserSerializer, GroupSerializer
-# from main_project.api.models import Postagem, Conteudo, Comentario
+from .serializers import PostagemSerializer, UserSerializer, GroupSerializer
+from .models import User, Postagem, Conteudo, Comentario
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -21,3 +21,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
+class PostagemViewSet(viewsets.ModelViewSet):
+    queryset = Postagem.objects.all()
+    serializer_class = PostagemSerializer

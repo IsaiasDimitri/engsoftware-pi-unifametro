@@ -22,7 +22,7 @@ Caso esteja no Windows:
 ```
 .env\Scripts\activate.bat
 ```  
-Por ultimo, vamos criar o banco (sqlite3, por enquanto) e os containers e subi-los em http://localhost:8000:
+Por ultimo, vamos criar o banco e os containers e subi-los em http://localhost:8000:
 ```
 python manage.py migrate  #criando o banco e a migração
 docker-compose build  #demora um pouco, nao se assuste
