@@ -4,11 +4,13 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
     Group,
-    BaseUserManager
+    BaseUserManager,
+    UserManager,
 )
 from django.core import validators
 from django.contrib.postgres.fields import ArrayField
-from datetime import datetime
+from django.utils import timezone
+import pytz
 import re
 
 # Create your models here.
@@ -61,11 +63,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(
         _("date joined"),
-        default=datetime.now,
+        default=timezone.now,
     )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
+    objects = UserManager()
+
+
+class Comentario(models.Model):
+    """
+    Comentario model
+    """
+
+    created = models.DateTimeField(default=timezone.now)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.autor} - {self.id}"
 
 
 class Postagem(models.Model):
@@ -73,24 +88,16 @@ class Postagem(models.Model):
     Postagem model
     """
 
-    created = models.DateTimeField(default=datetime.now)
+    created = models.DateTimeField(default=timezone.now)
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
     grupo = models.ForeignKey(Group, default=None, on_delete=models.SET_DEFAULT)
     titulo = models.CharField(max_length=45, default="", null=False)
-    likes = ArrayField(models.IntegerField(), null=True)
+    likes = models.ManyToManyField(User, related_name="likes", blank=True)
+    comments = models.ManyToManyField(Comentario, blank=True)
 
     # override
     def __str__(self) -> str:
-        return f"Autor: {self.autor}"
-
-
-class Comentario(models.Model):
-    """
-    Comentario
-    """
-
-    created = models.DateTimeField(default=datetime.now)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+        return f"{self.titulo} - {self.id}"
 
 
 class Conteudo(models.Model):
@@ -98,22 +105,33 @@ class Conteudo(models.Model):
     Conteudo model
     """
 
-    created = models.DateTimeField(default=datetime.now)
-    postagem = models.ForeignKey(Postagem, null=True, on_delete=models.CASCADE)
-    conteudo = models.ForeignKey(Comentario, null=True, on_delete=models.CASCADE)
+    created = models.DateTimeField(default=timezone.now)
+    postagem = models.ForeignKey(
+        Postagem, blank=True, null=True, on_delete=models.CASCADE
+    )
+    conteudo = models.ForeignKey(
+        Comentario, blank=True, null=True, on_delete=models.CASCADE
+    )
     texto = models.TextField()
-    # lista de imagens
-    imagens = ArrayField(
-        models.ImageField(upload_to="uploads/img/%Y/%m/%d/"),
-        size=3,
+
+    def __str__(self) -> str:
+        return f"{self.id} - Postagem: {self.postagem}"
+
+
+class ConteudoMidia(models.Model):
+    # TODO definir um local mais adequado para fazer o upload de arquivos
+    created = models.DateTimeField(default=timezone.now)
+    nome = models.CharField(max_length=20, null=True)
+    arquivo = models.FileField(
+        upload_to="files/%Y/%m/%d",
+        blank=True,
         null=True,
     )
-    # lista de arquivos
-    arquivos = ArrayField(
-        models.FileField(upload_to="uploads/files/%Y/%m/%d/"),
-        size=3,
-        null=True,
+    conteudo = models.ForeignKey(
+        Conteudo,
+        on_delete=models.CASCADE,
+        related_name="files",
     )
 
     def __str__(self) -> str:
-        return super().__str__()
+        return self.nome + " : " + self.conteudo

@@ -23,6 +23,9 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'postagens', views.PostagemViewSet)
+router.register(r'comentarios', views.ComentarioViewSet)
+router.register(r'conteudos', views.ConteudoViewSet)
+router.register(r'arquivos', views.ConteudoMidiaViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
