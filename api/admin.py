@@ -6,5 +6,5 @@ from api import models
 admin.site.register(models.User)
 admin.site.register(models.Comentario)
 admin.site.register(models.Postagem)
-admin.site.register(models.Conteudo)
-admin.site.register(models.ConteudoMidia)
+# admin.site.register(models.Conteudo)
+# admin.site.register(models.ConteudoMidia)

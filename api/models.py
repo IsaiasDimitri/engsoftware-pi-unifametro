@@ -71,18 +71,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
 
-class Comentario(models.Model):
-    """
-    Comentario model
-    """
-
-    created = models.DateTimeField(default=timezone.now)
-    autor = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.autor} - {self.id}"
-
-
 class Postagem(models.Model):
     """
     Postagem model
@@ -90,48 +78,60 @@ class Postagem(models.Model):
 
     created = models.DateTimeField(default=timezone.now)
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
-    grupo = models.ForeignKey(Group, default=None, on_delete=models.SET_DEFAULT)
-    titulo = models.CharField(max_length=45, default="", null=False)
+    conteudo = models.CharField(max_length=280, default="", null=False)
     likes = models.ManyToManyField(User, related_name="likes", blank=True)
-    comments = models.ManyToManyField(Comentario, blank=True)
 
     # override
     def __str__(self) -> str:
-        return f"{self.titulo} - {self.id}"
+        return f"{self.id}"
 
 
-class Conteudo(models.Model):
+class Comentario(models.Model):
     """
-    Conteudo model
+    Comentario model
     """
 
     created = models.DateTimeField(default=timezone.now)
-    postagem = models.ForeignKey(
-        Postagem, blank=True, null=True, on_delete=models.CASCADE
-    )
-    conteudo = models.ForeignKey(
-        Comentario, blank=True, null=True, on_delete=models.CASCADE
-    )
-    texto = models.TextField()
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)
+    postagem = models.ForeignKey(Postagem, on_delete=models.CASCADE)
+    conteudo = models.CharField(max_length=280, default="", null=False)
 
     def __str__(self) -> str:
-        return f"{self.id} - Postagem: {self.postagem}"
+        return f"{self.autor} - {self.id}"
 
 
-class ConteudoMidia(models.Model):
-    # TODO definir um local mais adequado para fazer o upload de arquivos
-    created = models.DateTimeField(default=timezone.now)
-    nome = models.CharField(max_length=20, null=True)
-    arquivo = models.FileField(
-        upload_to="files/%Y/%m/%d",
-        blank=True,
-        null=True,
-    )
-    conteudo = models.ForeignKey(
-        Conteudo,
-        on_delete=models.CASCADE,
-        related_name="files",
-    )
+# class Conteudo(models.Model):
+#     """
+#     Conteudo model
+#     """
 
-    def __str__(self) -> str:
-        return self.nome + " : " + self.conteudo
+#     created = models.DateTimeField(default=timezone.now)
+#     postagem = models.ForeignKey(
+#         Postagem, blank=True, null=True, on_delete=models.CASCADE
+#     )
+#     conteudo = models.ForeignKey(
+#         Comentario, blank=True, null=True, on_delete=models.CASCADE
+#     )
+#     texto = models.TextField()
+
+#     def __str__(self) -> str:
+#         return f"{self.id} - Postagem: {self.postagem}"
+
+
+# class ConteudoMidia(models.Model):
+#     # TODO definir um local mais adequado para fazer o upload de arquivos
+#     created = models.DateTimeField(default=timezone.now)
+#     nome = models.CharField(max_length=20, null=True)
+#     arquivo = models.FileField(
+#         upload_to="files/%Y/%m/%d",
+#         blank=True,
+#         null=True,
+#     )
+#     conteudo = models.ForeignKey(
+#         Conteudo,
+#         on_delete=models.CASCADE,
+#         related_name="files",
+#     )
+
+#     def __str__(self) -> str:
+#         return self.nome + " : " + self.conteudo

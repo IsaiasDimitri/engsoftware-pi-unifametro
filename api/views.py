@@ -3,14 +3,11 @@ from django.contrib.auth.models import Group
 from rest_framework import viewsets
 from .serializers import (
     ComentarioSerializer,
-    ConteudoMidiaSerializer,
-    ConteudoSerializer,
     PostagemSerializer,
     UserSerializer,
     GroupSerializer,
 )
-from .models import ConteudoMidia, User, Postagem, Conteudo, Comentario
-
+from .models import User, Postagem, Comentario
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -40,10 +37,10 @@ class ComentarioViewSet(viewsets.ModelViewSet):
     queryset = Comentario.objects.all()
     serializer_class = ComentarioSerializer
 
-class ConteudoViewSet(viewsets.ModelViewSet):
-    queryset = Conteudo.objects.all()
-    serializer_class = ConteudoSerializer
+# class ConteudoViewSet(viewsets.ModelViewSet):
+#     queryset = Conteudo.objects.all()
+#     serializer_class = ConteudoSerializer
 
-class ConteudoMidiaViewSet(viewsets.ModelViewSet):
-    queryset = ConteudoMidia.objects.all()
-    serializer_class = ConteudoMidiaSerializer
+# class ConteudoMidiaViewSet(viewsets.ModelViewSet):
+#     queryset = ConteudoMidia.objects.all()
+#     serializer_class = ConteudoMidiaSerializer

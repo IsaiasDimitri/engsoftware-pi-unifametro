@@ -1,50 +1,49 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.db.models import fields
 from rest_framework import serializers
 
-from api.models import Comentario, Conteudo, ConteudoMidia, Postagem
-
+from api.models import User, Comentario, Postagem
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["url", "username", "email", "groups"]
+        fields = ["id", "url", "username", "email", "groups"]
 
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = ["url", "name"]
+        fields = ["id", "url", "name"]
 
 
 class PostagemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Postagem
-        fields = ["created", "autor", "grupo", "titulo", "likes"]
+        fields = ["id", "created", "autor", "likes", "conteudo"]
 
 class ComentarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comentario
-        fields = ["created", "autor"]
+        fields = ["id", "created", "autor", "postagem", "conteudo"]
 
-class ConteudoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Conteudo
-        fields = [
-            "created",
-            "postagem",
-            "conteudo",
-            "texto",
-            "imagens",
-            "arquivos",
-        ]
+# class ConteudoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Conteudo
+#         fields = [
+#             "id", 
+#             "created",
+#             "postagem",
+#             "conteudo",
+#             "texto",
+#         ]
 
-class ConteudoMidiaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConteudoMidia
-        fields = [
-            "created",
-            "nome",
-            "arquivo",
-            "conteudo",
-        ]
+# class ConteudoMidiaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ConteudoMidia
+#         fields = [
+#             "id", 
+#             "created",
+#             "nome",
+#             "arquivo",
+#             "conteudo",
+#         ]
